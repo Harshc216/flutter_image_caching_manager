@@ -15,7 +15,11 @@ class ImageCachingDemoPage extends StatefulWidget {
 }
 
 class _ImageCachingDemoPageState extends State<ImageCachingDemoPage> {
-  final ImageCacheManager _cacheManager = ImageCacheManager();
+  final ImageCacheManager _cacheManager = ImageCacheManager(
+    config: const CacheConfig(
+      cacheDuration: Duration(seconds: 10),
+    ),
+  );
 
   final List<String> _imageUrls = List.generate(
     12,
@@ -25,6 +29,7 @@ class _ImageCachingDemoPageState extends State<ImageCachingDemoPage> {
   bool _refreshing = false;
   int _cacheSize = 0;
   int _memoryCacheSize = 0;
+  Key _gridKey = UniqueKey();
 
   @override
   void initState() {
@@ -52,9 +57,10 @@ class _ImageCachingDemoPageState extends State<ImageCachingDemoPage> {
   Future<void> _refreshImages() async {
     setState(() {
       _refreshing = true;
+      _gridKey = UniqueKey();
     });
 
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 800));
 
     if (!mounted) return;
 
@@ -67,11 +73,22 @@ class _ImageCachingDemoPageState extends State<ImageCachingDemoPage> {
 
   Future<void> _clearCache() async {
     await _cacheManager.clearCache();
-    await _updateCacheInfo();
 
     if (!mounted) return;
 
+    setState(() {
+      _cacheSize = 0;
+      _memoryCacheSize = 0;
+      _gridKey = UniqueKey();
+    });
+
     _showMessage('Image cache cleared');
+
+    // Update metrics after images finish re-downloading into the fresh cache
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (mounted) {
+      await _updateCacheInfo();
+    }
   }
 
   Future<void> _cleanExpiredCache() async {
@@ -153,8 +170,10 @@ class _ImageCachingDemoPageState extends State<ImageCachingDemoPage> {
             ),
             const SizedBox(height: 20),
             ImageGridSection(
+              key: _gridKey,
+              cacheManager: _cacheManager,
               imageUrls: _imageUrls,
-              onForceRefresh: () => setState(() {}),
+              onForceRefresh: _refreshImages,
             ),
           ],
         ),

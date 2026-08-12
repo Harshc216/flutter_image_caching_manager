@@ -48,7 +48,7 @@ void main() {
       final result = config.toString();
 
       expect(result, contains('25'));
-      expect(result, contains('2:00:00:00'));
+      expect(result, contains('48:00:00'));
       expect(result, contains('test_cache'));
     });
   });
@@ -125,6 +125,11 @@ void main() {
       );
 
       expect(key.length, 32);
+    });
+
+    test('cleanExpiredCache returns zero when no cache files are expired', () async {
+      final count = await manager.cleanExpiredCache();
+      expect(count, equals(0));
     });
   });
 

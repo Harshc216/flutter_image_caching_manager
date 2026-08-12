@@ -3,11 +3,13 @@ import 'package:flutter_image_caching_manager/flutter_image_caching_manager.dart
 
 /// Grid display section showing cached images.
 class ImageGridSection extends StatelessWidget {
+  final ImageCacheManager cacheManager;
   final List<String> imageUrls;
   final VoidCallback onForceRefresh;
 
   const ImageGridSection({
     super.key,
+    required this.cacheManager,
     required this.imageUrls,
     required this.onForceRefresh,
   });
@@ -37,6 +39,7 @@ class ImageGridSection extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             return ImageCard(
+              cacheManager: cacheManager,
               imageUrl: imageUrls[index],
               index: index,
               onForceRefresh: onForceRefresh,
@@ -50,12 +53,14 @@ class ImageGridSection extends StatelessWidget {
 
 /// Card representing an individual cached image.
 class ImageCard extends StatelessWidget {
+  final ImageCacheManager cacheManager;
   final String imageUrl;
   final int index;
   final VoidCallback onForceRefresh;
 
   const ImageCard({
     super.key,
+    required this.cacheManager,
     required this.imageUrl,
     required this.index,
     required this.onForceRefresh,
@@ -80,6 +85,7 @@ class ImageCard extends StatelessWidget {
         children: [
           Expanded(
             child: CachedImage(
+              cacheManager: cacheManager,
               imageUrl: imageUrl,
               width: double.infinity,
               fit: BoxFit.cover,

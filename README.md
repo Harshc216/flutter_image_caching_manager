@@ -12,7 +12,7 @@
 ## 📷 Preview
 
 <p align="center">
-  <img src="assets/image_cache.gif" alt="Image Caching Manager Preview" width="600"/>
+  <img src="assets/image_cache.gif" alt="Image Caching Manager Preview" width="320"/>
 </p>
 
 *A high-performance image caching manager featuring 3-tier retrieval (Memory, Disk, Network), live cache metric tracking, animated fade-in transitions, and clean cache controls.*
